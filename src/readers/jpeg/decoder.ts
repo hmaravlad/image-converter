@@ -1,11 +1,11 @@
-import { HuffmanTree } from "../../util/huffman";
-import { zigzagify } from "../../util/matrix";
+import { HuffmanTree } from '../../util/huffman';
+import { zigzagify } from '../../util/matrix';
 
 export function decodeJpeg(
   data: Buffer,
   huffmanTrees: { AC: HuffmanTree[], DC: HuffmanTree[] },
-  huffmanIds: { AC: number[], DC: number[] }
-) {
+  huffmanIds: { AC: number[], DC: number[] },
+): { channel: number; table: number[][]; }[] {
 
   const filtered = [...data].filter((value, i) => (
     i - 1 < 0 || !(value === 0x00 && data[i - 1] === 0xFF)
@@ -14,18 +14,18 @@ export function decodeJpeg(
   const read = readTable(huffmanTrees, huffmanIds, bits);
 
   let i = 0;
-  let lastDC = { 0: 0, 1: 0, 2: 0 };
+  const lastDC = { 0: 0, 1: 0, 2: 0 };
 
   const tables = [];
 
   while (i < bits.length) {
     for (const channel of getChannels()) {
       try {
-      const res = read(i, channel);
-      i = res.i;
-      res.table[0][0] = lastDC[channel] + res.table[0][0];
-      lastDC[channel] = res.table[0][0];
-      tables.push({ channel, table: res.table });
+        const res = read(i, channel);
+        i = res.i;
+        res.table[0][0] = lastDC[channel] + res.table[0][0];
+        lastDC[channel] = res.table[0][0];
+        tables.push({ channel, table: res.table });
       } catch (error) {
         i = bits.length;
         break;
@@ -52,8 +52,8 @@ const readTable = (
   data: string,
 ) => (start: number, channel: number): { table: number[][], i: number } => {
   let i = start;
-  let dcHuffmanTree = huffmanTrees.DC[huffmanIds.DC[channel]];
-  let acHuffmanTree = huffmanTrees.AC[huffmanIds.AC[channel]];
+  const dcHuffmanTree = huffmanTrees.DC[huffmanIds.DC[channel]];
+  const acHuffmanTree = huffmanTrees.AC[huffmanIds.AC[channel]];
 
   let isFindingDC = true;
 
@@ -69,7 +69,7 @@ const readTable = (
           values.push(0);
           i += 1;
         } else {
-          values.push(getValue(data.slice(i + 1, i + 1 + val)))
+          values.push(getValue(data.slice(i + 1, i + 1 + val)));
           i += val + 1;
         }
       } else {
@@ -85,7 +85,7 @@ const readTable = (
             values.push(0);
             i += 1;
           } else {
-            values.push(getValue(data.slice(i + 1, i + 1 + length)))
+            values.push(getValue(data.slice(i + 1, i + 1 + length)));
             i += length + 1;
           }
 
@@ -102,7 +102,7 @@ const readTable = (
     table: zigzagify(values),
     i,
   };
-}
+};
 
 function getValue(bits: string): number {
   const val = parseInt(bits, 2);

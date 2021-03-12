@@ -1,8 +1,8 @@
 export function quantizate(
   tables: { channel: number, table: number[][] }[],
   quantizationTables: number[][][],
-  quantizationIds: number[]
-) {
+  quantizationIds: number[],
+): { channel: number, table: number[][] }[] {
   return tables.map(({ channel, table }) => {
     const quantizationTable = quantizationTables[quantizationIds[channel]];
     for (let i = 0; i < 8; i++) {
@@ -12,5 +12,5 @@ export function quantizate(
     }
 
     return { channel, table };
-  })
+  });
 }

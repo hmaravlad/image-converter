@@ -15,4 +15,4 @@ export const writerFactory: IWriterFactory = {
     if (!writer) throw new Error(`Goal format: ${goalFormat} is not supported`);
     return writer;
   }
-}
+};
