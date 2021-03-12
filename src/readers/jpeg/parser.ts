@@ -1,8 +1,9 @@
-import { HuffmanTree } from "../../util/huffman";
-import { zigzagify } from "../../util/matrix";
+import { HuffmanTree } from '../../util/huffman';
+import { zigzagify } from '../../util/matrix';
 
 interface Marker {
   type: string,
+
   parse(buffer: Buffer): Info
 }
 
@@ -10,6 +11,7 @@ class GeneralInfo {
   width: number;
   height: number;
   quantizationIds: number[];
+
   constructor(width: number, height: number, quantizationIds: number[]) {
     this.width = width;
     this.height = height;
@@ -20,6 +22,7 @@ class GeneralInfo {
 class QuantizationTableInfo {
   id: number;
   table: number[][];
+
   constructor(id: number, table: number[][]) {
     this.id = id;
     this.table = table;
@@ -30,6 +33,7 @@ class HuffmanTreeInfo {
   type: string;
   id: number;
   tree: HuffmanTree;
+
   constructor(type: string, id: number, tree: HuffmanTree) {
     this.type = type;
     this.id = id;
@@ -40,8 +44,9 @@ class HuffmanTreeInfo {
 class DataInfo {
   data: Buffer;
   huffmanIds: { AC: number[], DC: number[] };
+
   constructor(data: Buffer, huffmanIds: { AC: number[], DC: number[] }) {
-    this.huffmanIds = huffmanIds; 
+    this.huffmanIds = huffmanIds;
     this.data = data;
   }
 }
@@ -66,7 +71,7 @@ const markers: { [key: number]: Marker } = {
       const width = buffer[5] * 256 + buffer[6];
       const quantizationIds = [10, 13, 16].map(i => buffer[i]);
       return new GeneralInfo(width, height, quantizationIds);
-    }
+    },
   },
   0xDB: {
     type: 'Quantization',
@@ -82,7 +87,7 @@ const markers: { [key: number]: Marker } = {
       const table = zigzagify([...buffer.slice(3, buffer.length)]);
 
       return new QuantizationTableInfo(id, table);
-    }
+    },
   },
   0xC4: {
     type: 'Huffman',
@@ -93,7 +98,7 @@ const markers: { [key: number]: Marker } = {
       const values = [...buffer.slice(19, buffer.length)];
       const tree = HuffmanTree.from(codeQuantities, values);
       return new HuffmanTreeInfo(type, id, tree);
-    }
+    },
   },
   0xDA: {
     type: 'SOS',
@@ -102,15 +107,22 @@ const markers: { [key: number]: Marker } = {
       const huffmanIds = {
         DC: [4, 6, 8].map(i => buffer[i] % 16),
         AC: [4, 6, 8].map(i => Math.floor(buffer[i] / 16)),
-      }
+      };
       return new DataInfo(data, huffmanIds);
-    }
+    },
   },
-}
+};
 
-export function parseJpeg(buffer: Buffer) {
+export function parseJpeg(buffer: Buffer): {
+  quantizationTables: number[][][];
+  huffmanTrees: { [key: string]: HuffmanTree[]; };
+  data: Buffer;
+  huffmanIds: { AC: number[]; DC: number[]; };
+  width: number;
+  height: number; quantizationIds: number[];
+} {
   let currMarker: Marker | undefined;
-  let results = [];
+  const results = [];
 
 
   for (let i = 2; i < buffer.length - 2; i++) {
@@ -125,9 +137,7 @@ export function parseJpeg(buffer: Buffer) {
         } else {
           results.push(currMarker.parse(buffer.slice(i, buffer.length - 2)));
         }
-      } 
-
-      
+      }
 
       i += sectionLength - 1;
     }
@@ -149,7 +159,7 @@ export function parseJpeg(buffer: Buffer) {
     } else if (info instanceof GeneralInfo) {
       generalInfo = info;
     } else if (info instanceof DataInfo) {
-      dataInfo = info
+      dataInfo = info;
     }
   }
 
@@ -160,5 +170,5 @@ export function parseJpeg(buffer: Buffer) {
     ...dataInfo,
     quantizationTables,
     huffmanTrees,
-  }
+  };
 }

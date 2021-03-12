@@ -43,7 +43,9 @@ export class HuffmanTree {
       currNode.left = new TreeNode();
     }
 
-    if (currNode.left instanceof Leaf) { } else {
+    // eslint-disable-next-line no-empty
+    if (currNode.left instanceof Leaf) {
+    } else {
       if (depth === 1) currNode.left = new Leaf(value);
       const res = this.createLeaf(value, depth - 1, currNode.left);
       if (res) return res;
@@ -53,7 +55,9 @@ export class HuffmanTree {
       currNode.right = new TreeNode();
     }
 
-    if (currNode.right instanceof Leaf) { } else {
+    // eslint-disable-next-line no-empty
+    if (currNode.right instanceof Leaf) {
+    } else {
       if (depth === 1) currNode.right = new Leaf(value);
       const res = this.createLeaf(value, depth - 1, currNode.right);
       if (res) return res;
@@ -62,7 +66,7 @@ export class HuffmanTree {
     return null;
   }
 
-  getValue() {
+  getValue(): (code: number) => Leaf | null {
     let curr: TreeNode = this.root;
     return (code: number) => {
       if (code === 0) {
@@ -78,6 +82,6 @@ export class HuffmanTree {
         return null;
       }
       throw new Error('Code is invalid');
-    }
+    };
   }
 }

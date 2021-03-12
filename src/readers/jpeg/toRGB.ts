@@ -1,16 +1,16 @@
-import { Image } from "../../types/image"
-import { IRGB } from "../../types/rgb"
-import { connectMatrixToBottom, connectMatrixToRight } from "../../util/matrix"
+import { Image } from '../../types/image';
+import { IRGB } from '../../types/rgb';
+import { connectMatrixToBottom, connectMatrixToRight } from '../../util/matrix';
 
 function YCbCrToRGB(Y: number, Cb: number, Cr: number): IRGB {
-  const rgb: IRGB = { red: 0, blue: 0, green: 0 }
-  rgb.red = Math.round(Y + 1.402 * (Cr - 128))
-  rgb.green = Math.round(Y - 0.34414 * (Cb - 128) - 0.71414 * (Cr - 128))
-  rgb.blue = Math.round(Y + 1.772 * (Cb - 128))
+  const rgb: IRGB = { red: 0, blue: 0, green: 0 };
+  rgb.red = Math.round(Y + 1.402 * (Cr - 128));
+  rgb.green = Math.round(Y - 0.34414 * (Cb - 128) - 0.71414 * (Cr - 128));
+  rgb.blue = Math.round(Y + 1.772 * (Cb - 128));
 
-  rgb.red = Math.min(Math.max(0, rgb.red), 255)
-  rgb.green = Math.min(Math.max(0, rgb.green), 255)
-  rgb.blue = Math.min(Math.max(0, rgb.blue), 255)
+  rgb.red = Math.min(Math.max(0, rgb.red), 255);
+  rgb.green = Math.min(Math.max(0, rgb.green), 255);
+  rgb.blue = Math.min(Math.max(0, rgb.blue), 255);
 
   return rgb;
 }
@@ -23,8 +23,8 @@ export function createImage(tables: { channel: number, table: number[][] }[], wi
   for (let i = 0; i < tables.length; i += 6) {
     const Y = connectMatrixToBottom(
       connectMatrixToRight(tables[i].table, tables[i + 1].table),
-      connectMatrixToRight(tables[i + 2].table, tables[i + 3].table)
-    )
+      connectMatrixToRight(tables[i + 2].table, tables[i + 3].table),
+    );
     const Cb = tables[i + 4].table;
     const Cr = tables[i + 5].table;
 
@@ -47,4 +47,4 @@ export function createImage(tables: { channel: number, table: number[][] }[], wi
   }
 
   return result;
-};
+}

@@ -4,12 +4,12 @@ const IDCTtable: number[][] = [];
 for (let i = 0; i < 8; i++) {
   IDCTtable.push([]);
   for (let j = 0; j < 8; j++) {
-    IDCTtable[i][j] = C(j) * Math.cos((2 * i + 1) * j * Math.PI / 16)
+    IDCTtable[i][j] = C(j) * Math.cos((2 * i + 1) * j * Math.PI / 16);
   }
 }
 
 
-function IDCT(table: number[][]) {
+function IDCT(table: number[][]): number[][] {
   const result: number[][] = new Array(8).fill([]).map(() => []);
 
   for (let x = 0; x < 8; x++) {
@@ -20,14 +20,14 @@ function IDCT(table: number[][]) {
           sum += table[v][u] * IDCTtable[x][u] * IDCTtable[y][v];
         }
       }
-      result[y][x] = Math.min(Math.max(Math.floor(sum / 4) + 128, 0), 255)
+      result[y][x] = Math.min(Math.max(Math.floor(sum / 4) + 128, 0), 255);
     }
   }
   return result;
 }
 
-export function applyIDCT(tables: { channel: number, table: number[][] }[]) {
+export function applyIDCT(tables: { channel: number, table: number[][] }[]): { channel: number, table: number[][] }[] {
   return tables.map(({ channel, table }) => {
-    return { channel, table: IDCT(table) }
-  })
+    return { channel, table: IDCT(table) };
+  });
 }
