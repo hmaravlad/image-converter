@@ -1,3 +1,5 @@
+import { Image } from '../../types/image';
+
 function generateBitmapFileHeader({
   fileSize = 0,
   applicationHeader = 0,
@@ -51,3 +53,31 @@ function generateDibHeader({
   buffer.writeInt32LE(0, 36);
   return buffer;
 }
+
+const writeImageToBuffer: (inputData: { image: Image, width: number, height: number, padding: number }) => Buffer
+  = ({ image, width, height, padding }) => {
+  const buffer = Buffer.alloc(height * width * 3 + 1);
+  let offset = 0;
+
+  for (let i = 0; i < image.length; i++) {
+    for (let j = 0; j < image[i].length; j++) {
+      buffer.writeUInt16LE(image[i][j].red, offset);
+      offset++;
+      buffer.writeUInt16LE(image[i][j].green, offset);
+      offset++;
+      buffer.writeUInt16LE(image[i][j].blue, offset);
+      offset++;
+
+      if (padding !== 0) {
+        let p = 0;
+        while (p < padding) {
+          buffer.writeUInt16LE(0, offset);
+          offset++;
+          p++;
+        }
+      }
+    }
+  }
+  return buffer;
+};
+
