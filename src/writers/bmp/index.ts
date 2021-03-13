@@ -63,17 +63,17 @@ const writeImageToBuffer: (inputData: { image: Image, width: number, height: num
   for (let i = 0; i < image.length; i++) {
     const row = image[i].reverse();
     for (let j = 0; j < row.length; j++) {
-      buffer.writeUInt16LE(row[j].red, offset);
+      buffer.writeInt16LE(row[j].blue, offset);
       offset++;
-      buffer.writeUInt16LE(row[j].green, offset);
+      buffer.writeInt16LE(row[j].green, offset);
       offset++;
-      buffer.writeUInt16LE(row[j].blue, offset);
+      buffer.writeInt16LE(row[j].red, offset);
       offset++;
 
       if (padding !== 0) {
         let p = 0;
         while (p < padding) {
-          buffer.writeUInt16LE(0, offset);
+          buffer.writeInt16LE(0, offset);
           offset++;
           p++;
         }
