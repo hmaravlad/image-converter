@@ -61,12 +61,13 @@ const writeImageToBuffer: (inputData: { image: Image, width: number, height: num
   let offset = 0;
 
   for (let i = 0; i < image.length; i++) {
-    for (let j = 0; j < image[i].length; j++) {
-      buffer.writeUInt16LE(image[i][j].red, offset);
+    const row = image[i].reverse();
+    for (let j = 0; j < row.length; j++) {
+      buffer.writeUInt16LE(row[j].red, offset);
       offset++;
-      buffer.writeUInt16LE(image[i][j].green, offset);
+      buffer.writeUInt16LE(row[j].green, offset);
       offset++;
-      buffer.writeUInt16LE(image[i][j].blue, offset);
+      buffer.writeUInt16LE(row[j].blue, offset);
       offset++;
 
       if (padding !== 0) {
@@ -79,7 +80,7 @@ const writeImageToBuffer: (inputData: { image: Image, width: number, height: num
       }
     }
   }
-  return buffer;
+  return buffer.reverse();
 };
 
 export const bmpWriter: IImageWriter = {
@@ -108,7 +109,7 @@ export const bmpWriter: IImageWriter = {
 
     const imageBuffer = writeImageToBuffer({ image, height, width, padding });
 
-    imageBuffer.reverse().copy(fileContent, 54);
+    imageBuffer.copy(fileContent, 54);
     return fileContent;
   },
 };
