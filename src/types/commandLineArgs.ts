@@ -8,7 +8,7 @@ export interface IConvertImageArgsRaw {
 
 export interface IConvertImageArgs {
   source: string,
-  output: string,
+  output?: string,
   goalFormat: string,
 }
 
