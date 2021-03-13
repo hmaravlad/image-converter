@@ -1,4 +1,5 @@
 import { Image } from '../../types/image';
+import { IImageWriter } from '../../types/writer';
 
 function generateBitmapFileHeader({
   fileSize = 0,
@@ -81,3 +82,33 @@ const writeImageToBuffer: (inputData: { image: Image, width: number, height: num
   return buffer;
 };
 
+export const bmpWriter: IImageWriter = {
+  write(image: Image): Buffer {
+    const padding = (image[0].length * 3 % 4) ? 4 - (image[0].length * 3) % 4 : 0;
+    const width = image[0].length + padding;
+    const height = image.length;
+    const imageDataOffset = 54;
+    const bitsPerPixel = 24;
+    const fileSize = imageDataOffset + height * width * (bitsPerPixel / 8);
+    const fileContent = Buffer.alloc(fileSize);
+
+    const fileHeader = generateBitmapFileHeader({
+      fileSize,
+      imageDataOffset,
+    });
+    fileHeader.copy(fileContent);
+
+    const dibHeader = generateDibHeader({
+      width,
+      height,
+      bitsPerPixel,
+      bitmapDataSize: fileSize,
+    });
+    dibHeader.copy(fileContent, 14);
+
+    const imageBuffer = writeImageToBuffer({ image, height, width, padding });
+
+    imageBuffer.reverse().copy(fileContent, 54);
+    return fileContent;
+  },
+};
