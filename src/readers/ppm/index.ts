@@ -27,7 +27,7 @@ const colorTo255 = (maxColor: number) => (color: number): number => {
 
 function parseImage(imageStr: string): Image {
   const imgArr = imageStr
-    .split(/\s/)
+    .split(/\s+/g)
     .filter(el => el !== '')
     .map(str => parseInt(str, 10));
 
@@ -37,11 +37,12 @@ function parseImage(imageStr: string): Image {
   const fixColor = colorTo255(maxColor);
 
   const image: Image = [];
+  const numWidth = width * 3;
 
   for (let i = 0; i < length; i++) {
     const row = [];
-    for (let j = 0; j < width; j++) {
-      const index = i + j + 3;
+    for (let j = 0; j < numWidth; j += 3) {
+      const index = i * (numWidth) + j + 4;
 
       const color: IRGB = {
         red: fixColor(imgArr[index]),
