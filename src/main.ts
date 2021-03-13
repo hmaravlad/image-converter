@@ -19,5 +19,5 @@ import { writerFactory } from './writers/writerFactory';
 
   const imageWriter = writerFactory.getWriter(args.goalFormat);
   const resultBuffer = imageWriter.write(image);
-  await promisify(writeFile)(args.output, resultBuffer)
+  await promisify(writeFile)(`${args.output}.${args.goalFormat}`, resultBuffer)
 })();
