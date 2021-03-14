@@ -59,15 +59,14 @@ const writeImageToBuffer: (inputData: { image: Image, width: number, height: num
   = ({ image, width, height, padding }) => {
   const buffer = Buffer.alloc(height * width * 3 + 1);
   let offset = 0;
-
-  for (let i = 0; i < image.length; i++) {
-    const row = image[i].reverse();
-    for (let j = 0; j < row.length; j++) {
-      buffer.writeInt16LE(row[j].blue, offset);
+  const reversedImage = image.reverse();
+  for (let i = 0; i < reversedImage.length; i++) {
+    for (let j = 0; j < reversedImage[i].length; j++) {
+      buffer.writeInt16LE(reversedImage[i][j].blue, offset);
       offset++;
-      buffer.writeInt16LE(row[j].green, offset);
+      buffer.writeInt16LE(reversedImage[i][j].green, offset);
       offset++;
-      buffer.writeInt16LE(row[j].red, offset);
+      buffer.writeInt16LE(reversedImage[i][j].red, offset);
       offset++;
 
       if (padding !== 0) {
@@ -80,7 +79,7 @@ const writeImageToBuffer: (inputData: { image: Image, width: number, height: num
       }
     }
   }
-  return buffer.reverse();
+  return buffer;
 };
 
 export const bmpWriter: IImageWriter = {
