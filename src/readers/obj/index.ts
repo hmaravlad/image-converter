@@ -1,8 +1,10 @@
-import Triangle from '../../../../Lab2/src/types/triangle';
-import Vector3D from '../../../../Lab2/src/types/vector3D';
-import { Vertex } from '../../../../Lab2/src/types/vertex';
-import { IImageReader } from "../../../../Lab2/src/types/reader";
-import { Image } from "../../../../Lab2/src/types/image";
+import Triangle from '../../models/triangle';
+import Vector3D from '../../models/vector3D';
+import { Vertex } from '../../types/vertex';
+import { IImageReader } from "../../types/reader";
+import { Image } from "../../types/image";
+import { IRender } from "../../types/render";
+import { IConverter } from "../../types/converter";
 
 export class objReader implements IImageReader {
   private data: string = '';
@@ -10,6 +12,9 @@ export class objReader implements IImageReader {
   private _outVn: Vector3D[] = [];
   private _outF: Vertex[][] = [];
   private _arrayOfTriangle: Triangle[] = [];
+
+  constructor(private readonly render: IRender, private readonly converter: IConverter) {
+  }
 
   private processLiteralV(data: string[]) {
     this._outV.push(new Vector3D(
@@ -70,7 +75,7 @@ export class objReader implements IImageReader {
   public read(buffer: Buffer): Image{
     this.data = buffer.toString('utf-8');
     this.parse();
-    console.log(buffer);
-    return [[{red: 255, green:255, blue:255}]]
+    const framebuffer = this.render.render();
+    return this.converter.convert(framebuffer);
   }
 }
