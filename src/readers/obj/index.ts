@@ -75,7 +75,7 @@ export class objReader implements IImageReader {
   public read(buffer: Buffer): Image{
     this.data = buffer.toString('utf-8');
     this.parse();
-    const framebuffer = this.render.render();
+    const framebuffer = this.render.render(this._arrayOfTriangle);
     return this.converter.convert(framebuffer);
   }
 }
