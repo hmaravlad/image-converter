@@ -1,6 +1,6 @@
 import Vector3D from "../models/vector3D";
-import { IRGB } from "./rgb";
+import { Image } from "./image";
 
 export interface IConverter {
-  convert(framebuffer: Vector3D[][]): IRGB[][]
+  convert(framebuffer: Vector3D[][]): Image
 }
