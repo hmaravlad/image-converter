@@ -46,8 +46,9 @@ export class objReader implements IImageReader {
   }
 
   private parse() {
-    for(let i = 0; i < this.data.length; i++) {
-      const row = this.data[i].split(' ');
+    const data = this.data.split('\n');
+    for(let i = 0; i < data.length; i++) {
+      const row = data[i].split(' ');
       const firstLiteral = row.shift();
       if(firstLiteral === 'v') {
         this.processLiteralV(row);
@@ -76,6 +77,6 @@ export class objReader implements IImageReader {
     this.data = buffer.toString('utf-8');
     this.parse();
     const framebuffer = this.render.render(this._arrayOfTriangle);
-    return this.converter.convert(framebuffer);
+    return this.converter.convert(framebuffer).reverse();
   }
 }
