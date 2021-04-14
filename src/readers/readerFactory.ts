@@ -3,13 +3,13 @@ import { jpegReader } from './jpeg';
 import { ppmReader } from './ppm';
 import { objReader } from "./obj";
 
-interface IWriterFactory {
+interface IReaderFactory {
   readers: { [key: string]: IImageReader },
 
   getReader(source: string): IImageReader
 }
 
-export const readerFactory: IWriterFactory = {
+export const readerFactory: IReaderFactory = {
   readers: {
     ppm: new ppmReader(),
     jpg: new jpegReader(),
