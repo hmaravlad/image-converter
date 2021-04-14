@@ -11,9 +11,9 @@ interface IWriterFactory {
 
 export const readerFactory: IWriterFactory = {
   readers: {
-    ppm: ppmReader,
-    jpg: jpegReader,
-    jpeg: jpegReader,
+    ppm: new ppmReader(),
+    jpg: new jpegReader(),
+    jpeg: new jpegReader(),
     obj: new objReader(),
   },
   getReader(source: string): IImageReader {
