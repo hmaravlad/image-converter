@@ -10,7 +10,7 @@ const K_ELIPSON = 1e-8;
 class RayTraceRender implements IRender {
   private readonly framebuffer: Vector3D[][] = [];
 
-  constructor(private triangles: Triangle[], private lights: Light[], private options: Options) {
+  constructor(private lights: Light[], private options: Options) {
     this.framebuffer = this.createFramebuffer(this.options)
   }
 
@@ -136,7 +136,7 @@ class RayTraceRender implements IRender {
     return { hit, vector: options.objectColor.multiply(Math.max(diffuseLightIntensity, diffuseLightIntensity2)) };
   };
 
-  private processForOnePixel(j: number, k: number): void
+  private processForOnePixel(j: number, k: number, triangles: Triangle[]): void
   {
     const x =
       (((2 * (k + 0.5)) / this.options.width - 1) *
@@ -149,12 +149,12 @@ class RayTraceRender implements IRender {
     if(this.framebuffer[j][k].equal(this.options.backgroundColor)) {
       let min = Number.MAX_SAFE_INTEGER;
       let color: Vector3D = this.options.backgroundColor;
-      for(let i = 0; i < this.triangles.length; i++) {
+      for(let i = 0; i < triangles.length; i++) {
         // const dir = rayDirectionFinder(options, j, k)
         const { hit, vector } = this.castRay(
           this.options.cameraPos,
           dir,
-          this.triangles[i],
+          triangles[i],
           this.lights,
           this.options
         );
@@ -168,10 +168,10 @@ class RayTraceRender implements IRender {
     }
   }
 
-  render(): Vector3D[][] {
+  render(triangles: Triangle[]): Vector3D[][] {
     for(let j = 0; j < this.options.height; j++) {
       for(let k = 0; k < this.options.width; k++) {
-        this.processForOnePixel(j, k);
+        this.processForOnePixel(j, k, triangles);
       }
     }
     return this.framebuffer;
