@@ -1,15 +1,16 @@
-import Vector3D from "./vector3D";
+import Vector3D from './vector3D';
 
 export class Options {
   constructor(
     private _height: number,
     private _width: number,
+    private _bias: number,
+    private _fov: number,
     private _backgroundColor: Vector3D,
     private _objectColor: Vector3D,
-    private _bias: number,
     private _cameraPos: Vector3D,
-    private _fov: number
-  ) {}
+  ) {
+  }
 
   get height(): number {
     return this._height;
