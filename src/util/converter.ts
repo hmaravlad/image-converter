@@ -13,7 +13,6 @@ export class Converter implements IConverter{
     for (let i = 0; i < framebuffer.length; i++) {
       const row: IRGB[] = [];
       for (let j = 0; j < framebuffer[i].length; j++) {
-        // let p = this.pos + y * rowBytes + x * 3;
         row.push({
           red: this.convertFrom1To255(framebuffer[i][j].x),
           green: this.convertFrom1To255(framebuffer[i][j].y),
