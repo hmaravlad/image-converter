@@ -1,4 +1,4 @@
-import Vector3D from './vector3D';
+import Vector3D from '../models/vector3D';
 import { Image } from "../types/image";
 import { IRGB } from "../types/rgb";
 
