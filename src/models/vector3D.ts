@@ -1,8 +1,8 @@
-class Vector3D{
+class Vector3D {
   constructor(private _x: number = 0, private _y: number = 0, private _z: number = 0) {
   }
 
-  get x (): number {
+  get x(): number {
     return this._x
   }
 
@@ -10,7 +10,7 @@ class Vector3D{
     this._x = num;
   }
 
-  get y (): number {
+  get y(): number {
     return this._y
   }
 
@@ -18,7 +18,7 @@ class Vector3D{
     this._y = num;
   }
 
-  get z (): number {
+  get z(): number {
     return this._z
   }
 
@@ -65,6 +65,10 @@ class Vector3D{
 
   equal(second: Vector3D): boolean {
     return this.x === second.x && this.y === second.y && this.z === second.z;
+  }
+
+  distance(vec: Vector3D): number {
+    return Math.sqrt((this._x - vec.x) ** 2 + (this._y - vec.y) ** 2 + (this._z - vec.z) ** 2)
   }
 }
 
