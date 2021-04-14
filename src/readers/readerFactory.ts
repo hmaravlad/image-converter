@@ -1,6 +1,7 @@
 import { IImageReader } from 'src/types/reader';
 import { jpegReader } from './jpeg';
 import { ppmReader } from './ppm';
+import { objReader } from "./obj";
 
 interface IWriterFactory {
   readers: { [key: string]: IImageReader },
@@ -13,6 +14,7 @@ export const readerFactory: IWriterFactory = {
     ppm: ppmReader,
     jpg: jpegReader,
     jpeg: jpegReader,
+    obj: new objReader(),
   },
   getReader(source: string): IImageReader {
     const sourceFormat = source.split('.').pop();
