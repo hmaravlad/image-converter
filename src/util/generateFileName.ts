@@ -1,7 +1,5 @@
-import { IConvertImageArgs } from '../types/commandLineArgs';
-
-export const generateFileName: (data: IConvertImageArgs) => string = (data) => {
-  const sourceNameArray = data.source.split('.');
+export const generateFileName: (sourceName: string, output: string, goalFormat: string) => string = (sourceName, output, goalFormat) => {
+  const sourceNameArray = sourceName.split('.');
   sourceNameArray.pop();
-  return data.output ? `${data.output}.${data.goalFormat}` : `${sourceNameArray.join('.')}.${data.goalFormat}`;
+  return output ? `${output}.${goalFormat}` : `${sourceNameArray.join('.')}.${goalFormat}`;
 };
