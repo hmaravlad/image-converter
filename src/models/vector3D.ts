@@ -26,11 +26,18 @@ class Vector3D {
     this._z = num;
   }
 
-  clone() {
+  clone(): Vector3D {
     return new Vector3D(this.x, this.y, this.z);
   }
 
-  dot(vec3: Vector3D) {
+  getByAxis(axis: number): number {
+    if (axis === 0) return this.x;
+    if (axis === 1) return this.y;
+    if (axis === 2) return this.z;
+    throw new Error();
+  }
+
+  dot(vec3: Vector3D): number {
     return this._x * vec3.x + this._y * vec3.y + this._z * vec3.z;
   }
 
@@ -48,6 +55,10 @@ class Vector3D {
 
   multiply(num: number): Vector3D {
     return new Vector3D(this.x * num, this.y * num, this.z * num);
+  }
+
+  divide(vec3: Vector3D): Vector3D {
+    return new Vector3D(this._x / vec3._x, this._y / vec3._y, this._z / vec3._z);
   }
 
   length(): number {
