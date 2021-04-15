@@ -1,9 +1,12 @@
-import { IConvertImageArgs, IConvertImageArgsRaw } from "src/types/commandLineArgs";
+import {
+  IRenderImageArgs,
+  IRenderImageArgsRaw
+} from "src/types/commandLineArgs";
 
-export function processArgs(args: IConvertImageArgsRaw): IConvertImageArgs {
+export function processArgs(args: IRenderImageArgsRaw): IRenderImageArgs {
   return {
     source: args.source,
     output: args.output,
-    goalFormat: args.goalFormat,
+    imageFormat: (args.output.split('.').slice(-1))[0],
   }
 }

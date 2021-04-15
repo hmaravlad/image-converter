@@ -5,7 +5,7 @@
   "main": "main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --max_old_space_size=2560 dist/main.js",
+    "start": "node dist/main.js --source=./examples/cow.obj --output=result.bmp",
     "serve": "tsnd --respawn --no-notify --transpile-only src/main.ts",
     "lint": "eslint . --ext .ts",
     "lint-fix": "eslint . --ext .ts --fix",
