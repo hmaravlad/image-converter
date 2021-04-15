@@ -5,7 +5,7 @@ import { IRGB } from 'src/types/rgb';
 export class ppmReader implements IImageReader {
   private colorTo255(maxColor: number): (color: number) => number {
     return color => Math.floor(color / maxColor * 255);
-  };
+  }
 
   private parseImage(imageStr: string): Image {
     const imgArr = imageStr
@@ -55,6 +55,6 @@ export class ppmReader implements IImageReader {
     } catch (error) {
       throw new Error('Invalid ppm file');
     }
-  };
+  }
 }
 
