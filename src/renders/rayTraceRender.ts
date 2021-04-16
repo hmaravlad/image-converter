@@ -81,7 +81,7 @@ class RayTraceRender implements IRender {
     const dir = new Vector3D(x, -1, z);
     if(this.framebuffer[j][k].equal(this.options.backgroundColor)) {
       let color: Vector3D = this.options.backgroundColor;
-      const traverseResult = this.tree.traverse(this.options.cameraPos, dir, this.options.cameraPos);
+      const traverseResult = this.tree.traverse(this.options.cameraPos, dir);
       if (traverseResult) {
         const { vector } = this.castRay(
           traverseResult.hit,
