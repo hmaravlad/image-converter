@@ -1,7 +1,7 @@
+import "reflect-metadata";
 import { readFile, writeFile } from 'fs';
 import { promisify } from 'util';
 import { parse } from 'ts-command-line-args';
-import { readerFactory } from './readers/readerFactory';
 import {
   IRenderImageArgsRaw,
   ConvertRenderImageArgsConfig
@@ -9,6 +9,7 @@ import {
 import { processArgs } from './util/processArgs';
 import { writerFactory } from './writers/writerFactory';
 import { generateFileName } from './util/generateFileName';
+import { readerFactory } from './compositionRoot';
 
 (async () => {
   const argsRaw = parse<IRenderImageArgsRaw>(ConvertRenderImageArgsConfig);

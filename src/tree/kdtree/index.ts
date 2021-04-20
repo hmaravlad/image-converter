@@ -1,17 +1,22 @@
-import Triangle from "../models/triangle";
-import { Box } from "../models/box";
-import Vector3D from "../models/vector3D";
-import { intersectBoxWithRay } from "../geometry/intersect";
+import Triangle from "../../models/triangle";
+import { Box } from "../../models/box";
+import Vector3D from "../../models/vector3D";
+import { intersectBoxWithRay } from "../../geometry/intersect";
 import { KdTreeNode } from "./node";
-import { TraverseResult } from "../types/traverseResult";
-import { injectable } from "inversify";
+import { TraverseResult } from "../../types/traverseResult";
+import { inject, injectable } from "inversify";
+import { ITree } from "../../types/iTree";
+import { ITreeFactory } from "../../types/iTreeFactory";
+import { IBoxSplitter } from "../../types/iBoxSplitter";
+import { TYPES } from "../../types";
+import { LongestAxisBoxSplitter } from "./longestAxisBoxSplitter";
 
-export class KdTree {
+export class KdTree implements ITree {
   head: KdTreeNode;
 
-  constructor(triangles: Triangle[]) {
+  constructor(triangles: Triangle[], boxSplitter: IBoxSplitter) {
     const box = this.createRootBox(triangles);
-    this.head = new KdTreeNode(triangles, box, 1);
+    this.head = new KdTreeNode(triangles, box, 1, boxSplitter);
   }
 
   private createRootBox(triangles: Triangle[]): Box {
@@ -50,5 +55,14 @@ export class KdTree {
     if (tmin < 0) tmin = 0;
     if (!intersected) return undefined;
     return this.head.traverse(orig, dir, stack, tmax, tmin)
+  }
+}
+
+@injectable()
+export class KdTreeFactory implements ITreeFactory {
+  constructor(@inject(TYPES.IBoxSplitter) private boxSplitter:  LongestAxisBoxSplitter) {}
+
+  getTree(triangles: Triangle[]): ITree {
+    return new KdTree(triangles, this.boxSplitter);
   }
 }

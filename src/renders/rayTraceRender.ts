@@ -6,14 +6,19 @@ import Triangle from "../models/triangle";
 import { IRender } from "../types/render";
 import { rayTriangleIntersect } from "../geometry/intersect";
 import { SceneIntersectResult } from "../types/hitResult";
-import { KdTree } from "../tree";
+import { ITreeFactory } from "../types/iTreeFactory";
+import { ITree } from "../types/iTree";
+import { IRendererFactory } from "../types/iRendererFactory";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../types";
 
-
-class RayTraceRender implements IRender {
+export class RayTraceRender implements IRender {
   private readonly framebuffer: Vector3D[][] = [];
-  private tree: KdTree | undefined;
+  private treeFactory: ITreeFactory;
+  private tree: ITree | undefined;
 
-  constructor(private lights: Light[], private options: Options) {
+  constructor(private lights: Light[], private options: Options, treeFactory: ITreeFactory) {
+    this.treeFactory = treeFactory;
     this.framebuffer = this.createFramebuffer(this.options)
   }
 
@@ -99,7 +104,7 @@ class RayTraceRender implements IRender {
   }
 
   render(triangles: Triangle[]): Vector3D[][] {
-    this.tree = new KdTree(triangles);
+    this.tree = this.treeFactory.getTree(triangles);
     for(let j = 0; j < this.options.height; j++) {
       for(let k = 0; k < this.options.width; k++) {
         this.processForOnePixel(j, k);
@@ -109,4 +114,10 @@ class RayTraceRender implements IRender {
   }
 }
 
-export default RayTraceRender;
+@injectable()
+export class RayTraceRenderFactory implements IRendererFactory {
+  constructor(@inject(TYPES.ITreeFactory) private treeFactory: ITreeFactory) {}
+  getRenderer(lights: Light[], options: Options): IRender {
+    return new RayTraceRender(lights, options, this.treeFactory);
+  }
+}

@@ -1,9 +1,9 @@
-import { sceneIntersect } from "../geometry/intersect";
-import { Box } from "../models/box";
-import Triangle from "../models/triangle";
-import Vector3D from "../models/vector3D";
-import { TraverseResult } from "../types/traverseResult";
-import { boxSplitter } from "./boxSplitter";
+import { IBoxSplitter } from "../../types/iBoxSplitter";
+import { sceneIntersect } from "../../geometry/intersect";
+import { Box } from "../../models/box";
+import Triangle from "../../models/triangle";
+import Vector3D from "../../models/vector3D";
+import { TraverseResult } from "../../types/traverseResult";
 
 const MAX_DEPTH = 40;
 
@@ -22,8 +22,10 @@ export class KdTreeNode {
   depth: number;
   splitAxis?: number;
   splitValue?: number;
+  boxSplitter: IBoxSplitter;
 
-  constructor(tbs: Triangle[], box: Box, depth: number) {
+  constructor(tbs: Triangle[], box: Box, depth: number, boxSplitter: IBoxSplitter) {
+    this.boxSplitter = boxSplitter;
     this.triangles = tbs;
     this.box = box;
     this.depth = depth;
@@ -31,7 +33,7 @@ export class KdTreeNode {
   }
 
   splitNode(): void {
-    const { box1, box2 } = boxSplitter.split(this.box, this);
+    const { box1, box2 } = this.boxSplitter.split(this.box, this);
     const tbs1 = [];
     const tbs2 = [];
 
@@ -47,8 +49,8 @@ export class KdTreeNode {
       }
     }
 
-    this.left = new KdTreeNode(tbs1, box1, this.depth + 1);
-    this.right = new KdTreeNode(tbs2, box2, this.depth + 1);
+    this.left = new KdTreeNode(tbs1, box1, this.depth + 1, this.boxSplitter);
+    this.right = new KdTreeNode(tbs2, box2, this.depth + 1, this.boxSplitter);
   }
 
   checkStoppingCondition(): boolean {
