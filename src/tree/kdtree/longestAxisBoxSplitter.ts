@@ -1,9 +1,12 @@
-import { Box } from "../models/box";
-import Vector3D from "../models/vector3D";
+import { injectable } from "inversify";
+import { IBoxSplitter } from "../../types/iBoxSplitter";
+import { Box } from "../../models/box";
+import Vector3D from "../../models/vector3D";
 import { KdTreeNode } from "./node";
 
-export class boxSplitter {
-  static split(box: Box, node: KdTreeNode): { box1: Box, box2: Box } {
+@injectable()
+export class LongestAxisBoxSplitter implements IBoxSplitter {
+  split(box: Box, node: KdTreeNode): { box1: Box, box2: Box } {
     const delta = box.max.minus(box.min);
     if (delta.x > delta.y && delta.x > delta.z) {
       node.splitAxis = 0;
