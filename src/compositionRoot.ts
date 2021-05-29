@@ -2,7 +2,7 @@ import { Container } from "inversify";
 import { StaticLightProvider } from "./providers/staticLightProvider";
 import { StaticOptionsProvider } from "./providers/staticOptionsProvider";
 import { IReaderFactory, ReaderFactory } from "./readers/readerFactory";
-import { RayTraceRenderFactory } from "./renders/rayTraceRender";
+import { RayTraceRenderFactory } from "./renders/raytracing/rayTraceRender";
 import { KdTreeFactory } from "./tree/kdtree";
 import { LongestAxisBoxSplitter } from "./tree/kdtree/longestAxisBoxSplitter";
 import { TYPES } from "./types";

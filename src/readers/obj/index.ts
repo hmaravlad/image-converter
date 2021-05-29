@@ -3,17 +3,17 @@ import Vector3D from '../../models/vector3D';
 import { Vertex } from '../../types/vertex';
 import { IImageReader } from "../../types/reader";
 import { Image } from "../../types/image";
-import { IRender } from "../../types/render";
+import { IRenderer } from "../../types/renderer";
 import { IConverter } from "../../types/converter";
 
 export class objReader implements IImageReader {
-  private data: string = '';
+  private data = '';
   private _outV: Vector3D[] = [];
   private _outVn: Vector3D[] = [];
   private _outF: Vertex[][] = [];
   private _arrayOfTriangle: Triangle[] = [];
 
-  constructor(private readonly render: IRender, private readonly converter: IConverter) {
+  constructor(private readonly renderer: IRenderer, private readonly converter: IConverter) {
   }
 
   private processLiteralV(data: string[]) {
@@ -76,7 +76,7 @@ export class objReader implements IImageReader {
   public read(buffer: Buffer): Image{
     this.data = buffer.toString('utf-8');
     this.parse();
-    const framebuffer = this.render.render(this._arrayOfTriangle);
+    const framebuffer = this.renderer.render(this._arrayOfTriangle);
     return this.converter.convert(framebuffer).reverse();
   }
 }

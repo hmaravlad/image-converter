@@ -1,18 +1,18 @@
 /* eslint indent: 0 */
-import { Options } from "../models/options";
-import Vector3D from "../models/vector3D";
-import Light from "../models/light";
-import Triangle from "../models/triangle";
-import { IRender } from "../types/render";
-import { rayTriangleIntersect } from "../geometry/intersect";
-import { SceneIntersectResult } from "../types/hitResult";
-import { ITreeFactory } from "../types/iTreeFactory";
-import { ITree } from "../types/iTree";
-import { IRendererFactory } from "../types/iRendererFactory";
+import { Options } from "../../models/options";
+import Vector3D from "../../models/vector3D";
+import Light from "../../models/light";
+import Triangle from "../../models/triangle";
+import { IRenderer } from "../../types/renderer";
+import { rayTriangleIntersect } from "../../geometry/intersect";
+import { SceneIntersectResult } from "../../types/hitResult";
+import { ITreeFactory } from "../../types/iTreeFactory";
+import { ITree } from "../../types/iTree";
+import { IRendererFactory } from "../../types/iRendererFactory";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../types";
+import { TYPES } from "../../types";
 
-export class RayTraceRender implements IRender {
+export class RayTraceRenderer implements IRenderer {
   private readonly framebuffer: Vector3D[][] = [];
   private treeFactory: ITreeFactory;
   private tree: ITree | undefined;
@@ -115,9 +115,9 @@ export class RayTraceRender implements IRender {
 }
 
 @injectable()
-export class RayTraceRenderFactory implements IRendererFactory {
+export class RayTraceRendererFactory implements IRendererFactory {
   constructor(@inject(TYPES.ITreeFactory) private treeFactory: ITreeFactory) {}
-  getRenderer(lights: Light[], options: Options): IRender {
-    return new RayTraceRender(lights, options, this.treeFactory);
+  getRenderer(lights: Light[], options: Options): IRenderer {
+    return new RayTraceRenderer(lights, options, this.treeFactory);
   }
 }

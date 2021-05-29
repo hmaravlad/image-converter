@@ -1,7 +1,7 @@
 import Light from "../models/light";
 import { Options } from "../models/options";
-import { IRender } from "./render";
+import { IRenderer } from "./renderer";
 
 export interface IRendererFactory {
-  getRenderer: (lights: Light[], options: Options) => IRender
+  getRenderer: (lights: Light[], options: Options) => IRenderer
 }
