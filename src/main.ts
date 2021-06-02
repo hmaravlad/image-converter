@@ -17,7 +17,7 @@ import { readerFactory } from './compositionRoot';
 
   const originalBuffer = await promisify(readFile)(args.source);
   const imageReader = readerFactory.getReader(args.source);
-  const image = imageReader.read(originalBuffer);
+  const image = await imageReader.read(originalBuffer);
 
   const imageWriter = writerFactory.getWriter(args.imageFormat);
   const resultBuffer = imageWriter.write(image);
