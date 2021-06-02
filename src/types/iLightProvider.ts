@@ -1,5 +1,5 @@
-import Light from "../models/light";
+import PointLight from "../lights/pointTight";
 
 export interface ILightProvider {
-  getLight: () => Light[]
+  getLight: () => PointLight[]
 }
