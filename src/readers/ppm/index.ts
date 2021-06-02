@@ -47,7 +47,7 @@ export class ppmReader implements IImageReader {
       .join('\n');
   }
 
-  read(buffer: Buffer): Image {
+  async read(buffer: Buffer): Promise<Image> {
     try {
       const imageStr = buffer.toString('ascii');
       const imageStrFiltered = this.filterComments(imageStr);

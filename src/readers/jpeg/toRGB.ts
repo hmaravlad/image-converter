@@ -2,7 +2,7 @@ import { Image } from '../../types/image';
 import { IRGB } from '../../types/rgb';
 import { connectMatrixToBottom, connectMatrixToRight } from '../../util/matrix';
 
-function YCbCrToRGB(Y: number, Cb: number, Cr: number): IRGB {
+export function YCbCrToRGB(Y: number, Cb: number, Cr: number): IRGB {
   const rgb: IRGB = { red: 0, blue: 0, green: 0 };
   rgb.red = Math.round(Y + 1.402 * (Cr - 128));
   rgb.green = Math.round(Y - 0.34414 * (Cb - 128) - 0.71414 * (Cr - 128));

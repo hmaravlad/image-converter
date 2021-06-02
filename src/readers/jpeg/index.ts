@@ -8,7 +8,7 @@ import { quantizate } from "./quantization";
 import { createImage } from "./toRGB";
 
 export class jpegReader implements IImageReader {
-  read(buffer: Buffer): Image {
+  async read(buffer: Buffer): Promise<Image> {
     const { data, width, huffmanTrees, quantizationIds, quantizationTables, huffmanIds } = parseJpeg(buffer);
     const tablesRaw = decodeJpeg(data, huffmanTrees as { AC: HuffmanTree[], DC: HuffmanTree[] }, huffmanIds);
     const tables = applyIDCT(quantizate(tablesRaw, quantizationTables, quantizationIds));
