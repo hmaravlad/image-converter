@@ -1,15 +1,21 @@
+import { Transform, Vector3 } from '@computer-graphics-course/scene-format';
+import { PerspectiveCamera } from '../cameras/perspectiveCamera';
+import { ICamera } from '../types/iCamera';
+import { Transformation } from './transformation';
 import Vector3D from './vector3D';
 
 export class Options {
+
+  public camera: ICamera
   constructor(
     private _height: number,
     private _width: number,
     private _bias: number,
-    private _fov: number,
     private _backgroundColor: Vector3D,
     private _objectColor: Vector3D,
-    private _cameraPos: Vector3D,
   ) {
+    this.camera = new PerspectiveCamera(this, new Transformation(Transform.fromPartial({ position: <Vector3>{ x: 0, y: 0, z: 0 } })), 150);
+    (this.camera as PerspectiveCamera).origin = new Vector3D(0, -3, 0);
   }
 
   get height(): number {
@@ -50,21 +56,5 @@ export class Options {
 
   set bias(num: number) {
     this._bias = num;
-  }
-
-  get cameraPos(): Vector3D {
-    return this._cameraPos;
-  }
-
-  set cameraPos(vec: Vector3D) {
-    this._cameraPos = vec;
-  }
-
-  get fov(): number {
-    return this._fov;
-  }
-
-  set fov(num: number) {
-    this._fov = num;
   }
 }

@@ -1,20 +1,15 @@
+import { IMaterial } from '../../types/iMaterial';
 import Triangle from '../../models/triangle';
 import Vector3D from '../../models/vector3D';
 import { Vertex } from '../../types/vertex';
-import { IImageReader } from "../../types/reader";
-import { Image } from "../../types/image";
-import { IRender } from "../../types/render";
-import { IConverter } from "../../types/converter";
 
-export class objReader implements IImageReader {
-  private data: string = '';
+export class objParser {
+  private data = '';
   private _outV: Vector3D[] = [];
   private _outVn: Vector3D[] = [];
   private _outF: Vertex[][] = [];
   private _arrayOfTriangle: Triangle[] = [];
 
-  constructor(private readonly render: IRender, private readonly converter: IConverter) {
-  }
 
   private processLiteralV(data: string[]) {
     this._outV.push(new Vector3D(
@@ -45,7 +40,8 @@ export class objReader implements IImageReader {
     this._outF.push(tempArr);
   }
 
-  private parse() {
+  parse(buffer: Buffer, material: IMaterial): Triangle[] {
+    this.data = buffer.toString('utf-8');
     const data = this.data.split('\n');
     for(let i = 0; i < data.length; i++) {
       const row = data[i].split(' ');
@@ -66,17 +62,11 @@ export class objReader implements IImageReader {
         this._outV[elem[2].v],
         this._outVn[elem[0].vn],
         this._outVn[elem[1].vn],
-        this._outVn[elem[2].vn]
+        this._outVn[elem[2].vn],
+        material
       );
       this._arrayOfTriangle.push(tria);
     }
     return this._arrayOfTriangle;
-  }
-
-  public read(buffer: Buffer): Image{
-    this.data = buffer.toString('utf-8');
-    this.parse();
-    const framebuffer = this.render.render(this._arrayOfTriangle);
-    return this.converter.convert(framebuffer).reverse();
   }
 }

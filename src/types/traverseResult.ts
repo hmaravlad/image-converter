@@ -1,7 +1,7 @@
-import Triangle from "../models/triangle";
-import { SceneIntersectResult } from "./hitResult";
+import { IntersectResult } from "./hitResult";
+import { IIntersectable } from "./iIntersectable";
 
 export interface TraverseResult  {
-  hit: SceneIntersectResult,
-  triangle: Triangle,
+  hit: IntersectResult,
+  shape: IIntersectable,
 }

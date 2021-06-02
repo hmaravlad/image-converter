@@ -1,9 +1,9 @@
 import { IBoxSplitter } from "../../types/iBoxSplitter";
-import { sceneIntersect } from "../../geometry/intersect";
 import { Box } from "../../models/box";
-import Triangle from "../../models/triangle";
 import Vector3D from "../../models/vector3D";
 import { TraverseResult } from "../../types/traverseResult";
+import { IBoxable } from "src/types/iBoxable";
+import { IIntersectable } from "src/types/iIntersectable";
 
 const MAX_DEPTH = 40;
 
@@ -11,22 +11,22 @@ interface NodeInfo {
   left?: NodeInfo,
   right?: NodeInfo,
   depth: number,
-  triangles: number,
+  shapes: number,
 }
 
 export class KdTreeNode {
   left?: KdTreeNode;
   right?: KdTreeNode;
-  triangles: Triangle[];
+  shapes: (IBoxable & IIntersectable)[];
   box: Box;
   depth: number;
   splitAxis?: number;
   splitValue?: number;
   boxSplitter: IBoxSplitter;
 
-  constructor(tbs: Triangle[], box: Box, depth: number, boxSplitter: IBoxSplitter) {
+  constructor(tbs: (IBoxable & IIntersectable)[], box: Box, depth: number, boxSplitter: IBoxSplitter) {
     this.boxSplitter = boxSplitter;
-    this.triangles = tbs;
+    this.shapes = tbs;
     this.box = box;
     this.depth = depth;
     this.splitNode();
@@ -37,15 +37,15 @@ export class KdTreeNode {
     const tbs1 = [];
     const tbs2 = [];
 
-    if (this.triangles.length < 3) return;
+    if (this.shapes.length < 3) return;
     if (this.checkStoppingCondition()) return;
 
-    for (const triangle of this.triangles) {
-      if (box1.isTriangleInBox(triangle)) {
-        tbs1.push(triangle);
+    for (const shape of this.shapes) {
+      if (shape.isInBox(box1)) {
+        tbs1.push(shape);
       }
-      if (box2.isTriangleInBox(triangle)) {
-        tbs2.push(triangle);
+      if (shape.isInBox(box2)) {
+        tbs2.push(shape);
       }
     }
 
@@ -60,7 +60,7 @@ export class KdTreeNode {
   getInfo(): NodeInfo {
     const info: NodeInfo = {
       depth: this.depth,
-      triangles: this.triangles.length,
+      shapes: this.shapes.length,
     };
     if (this.right) {
       info.right = this.right.getInfo();
@@ -79,7 +79,7 @@ export class KdTreeNode {
     ];
 
     if (!this.splitValue || !this.splitAxis || !this.right || !this.left) {
-      return this.traverseTriangles(orig, dir);
+      return this.traverseShapes(orig, dir);
     }
 
     const invDir = (new Vector3D(1, 1, 1)).divide(dir);
@@ -94,7 +94,7 @@ export class KdTreeNode {
     }
 
     if (tSplit >= tmax) {
-      return farNode.traverse(orig, dir, stack, tmax, tmin);
+      return nearNode.traverse(orig, dir, stack, tmax, tmin);
     }
 
     stack.push(farNode);
@@ -105,20 +105,20 @@ export class KdTreeNode {
     return res || undefined;
   }
 
-  traverseTriangles(orig: Vector3D, dir: Vector3D): TraverseResult | undefined {
+  traverseShapes(orig: Vector3D, dir: Vector3D): TraverseResult | undefined {
     let min = Number.MAX_VALUE;
     let res;
-    let triangleRes;
-    for (const triangle of this.triangles) {
-      const intersectRes = sceneIntersect(orig, dir, triangle);
-      if (!intersectRes.flag) continue;
+    let shapeRes;
+    for (const shape of this.shapes) {
+      const intersectRes = shape.intersectWithRay(orig, dir);
+      if (!intersectRes) continue;
       const currentDistance = intersectRes.hit.distance(orig);
       if (min > currentDistance) {
         min = currentDistance;
         res = intersectRes;
-        triangleRes = triangle;
+        shapeRes = shape;
       }
     }
-    return !res || !triangleRes ? undefined : { hit: res, triangle: triangleRes };
+    return !res || !shapeRes ? undefined : { hit: res, shape: shapeRes };
   }
 }

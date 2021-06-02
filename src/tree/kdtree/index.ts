@@ -10,17 +10,19 @@ import { ITreeFactory } from "../../types/iTreeFactory";
 import { IBoxSplitter } from "../../types/iBoxSplitter";
 import { TYPES } from "../../types";
 import { LongestAxisBoxSplitter } from "./longestAxisBoxSplitter";
+import { IBoxable } from "../../types/iBoxable";
+import { IIntersectable } from "../../types/iIntersectable";
 
 export class KdTree implements ITree {
   head: KdTreeNode;
 
-  constructor(triangles: Triangle[], boxSplitter: IBoxSplitter) {
-    const box = this.createRootBox(triangles);
-    this.head = new KdTreeNode(triangles, box, 1, boxSplitter);
+  constructor(shapes: (IBoxable & IIntersectable)[], boxSplitter: IBoxSplitter) {
+    const box = this.createRootBox(shapes);
+    this.head = new KdTreeNode(shapes, box, 1, boxSplitter);
   }
 
-  private createRootBox(triangles: Triangle[]): Box {
-    const tbs = triangles.map(triangle => ({ triangle, box: triangle.findBox() }));
+  private createRootBox(shapes: (IBoxable & IIntersectable)[]): Box {
+    const tbs = shapes.map(shape => ({ shape, box: shape.findBox() }));
 
     let minX = Number.MAX_VALUE;
     let minY = Number.MAX_VALUE;
@@ -40,10 +42,9 @@ export class KdTree implements ITree {
       if (maxZ < tb.box.max.z) maxZ = tb.box.max.z;
     }
 
-
     return new Box(
-      new Vector3D(minX, minY, minZ),
-      new Vector3D(maxX, maxY, maxZ),
+      new Vector3D(minX - 0, minY - 0, minZ - 0),
+      new Vector3D(maxX + 0, maxY + 0, maxZ + 0),
     );
   }
 
@@ -60,9 +61,9 @@ export class KdTree implements ITree {
 
 @injectable()
 export class KdTreeFactory implements ITreeFactory {
-  constructor(@inject(TYPES.IBoxSplitter) private boxSplitter:  LongestAxisBoxSplitter) {}
+  constructor(@inject(TYPES.IBoxSplitter) private boxSplitter: LongestAxisBoxSplitter) { }
 
-  getTree(triangles: Triangle[]): ITree {
-    return new KdTree(triangles, this.boxSplitter);
+  getTree(shapes: (IBoxable & IIntersectable)[]): ITree {
+    return new KdTree(shapes, this.boxSplitter);
   }
 }

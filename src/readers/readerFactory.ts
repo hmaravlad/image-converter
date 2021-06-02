@@ -1,7 +1,7 @@
 import { IImageReader } from '../types/reader';
 import { jpegReader } from './jpeg';
 import { ppmReader } from './ppm';
-import { objReader } from './obj';
+import { cowsceneReader } from './cowscene';
 import { Converter } from '../util/converter';
 import { TYPES } from '../types';
 import { IRendererFactory } from '../types/iRendererFactory';
@@ -20,17 +20,12 @@ export class ReaderFactory implements IReaderFactory {
   readers: { [key: string]: IImageReader };
   constructor(
     @inject(TYPES.IRendererFactory) rendererFactory: IRendererFactory,
-    @inject(TYPES.ILightProvider) lightProvider: ILightProvider,
-    @inject(TYPES.IOptionsProvider) optionsProvider: IOptionsProvider,
   ) {
-    const lights = lightProvider.getLight();
-    const options = optionsProvider.getOptions();
-
     this.readers = {
       ppm: new ppmReader(),
       jpg: new jpegReader(),
       jpeg: new jpegReader(),
-      obj: new objReader(rendererFactory.getRenderer(lights, options), new Converter()),
+      cowscene: new cowsceneReader(rendererFactory, new Converter()),
     }
   }
 

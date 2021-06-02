@@ -5,7 +5,7 @@
   "main": "main.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/main.js --source=./examples/cow.obj --output=result.bmp",
+    "start": "node dist/main.js --source=./examples/cow2.cowscene --output=result.bmp",
     "serve": "tsnd --respawn --no-notify --transpile-only src/main.ts",
     "lint": "eslint . --ext .ts",
     "lint-fix": "eslint . --ext .ts --fix",
@@ -32,6 +32,7 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
+    "@computer-graphics-course/scene-format": "^0.1.190",
     "inversify": "^5.0.5",
     "reflect-metadata": "^0.1.13",
     "ts-command-line-args": "^1.8.0"
